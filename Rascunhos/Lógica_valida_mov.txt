@@ -1,0 +1,137 @@
+Quem tem que decidir se o movimento é ambíguo ou inválido é a máquina.
+É preciso saber disso antes que o usuário digite o input.
+Há duas formas de fazer isso, por regex, ou por lógica de programação.
+
+Por regex acho que já diminui casos suficientes, agora vai por lógica.
+
+Checa se movimento está no tabuleiro:
+    Checa se movimento dentro do tabuleiro é valido:
+        Descobre qual peça está tentando se mover para qual posição:
+            Pega a posição de destino e o nome da peça (cavalo, peão, etc..)
+            Calcula quais peças podem chegar nessa posição:
+                Pra isso é preciso ter a função de movimento de cada peça;
+
+//Funcao para definir os limites para onde a peça está indo //inversor poderia se chamar direção
+Funcao lims (inversor)
+    if(inversor == 1): lim = 7
+    else: lim = 0
+    return lim
+
+
+Função de movimento de cada peça do Xadrez:
+    (xf, yf) => Representa arrays com todos os y's possíveis de movimento de um determinado peão
+
+    Peão: 
+        Para o time branco:
+            yParcial = yi + 1 * inversor //Peão só se move 1 casa para frente
+            xParcial = xi
+            lims[X, Y] = limite(@params..)
+            Se yParcial*inversor <= limY
+                Se não há peça do meu oponente nem do meu time na posição (xParcial, yParcial)
+                    pode ser (xParcial, Yparcial)
+
+                xParcial = xi + 1
+                lims[X, Y] = limite(@params..)
+                Se xParcial <= limX
+                    Se há peça do meu oponente na posição (xParcial, yParcial)
+                        pode ser xParcial, yParcial (com captura)
+
+                xParcial = xi - 1
+                lims[X, Y] = limite(@params..)
+                Se xParcial >= limX
+                    Se há peça do meu oponente na posição (xParcial, yParcial)
+                        pode ser xParcial, yParcial (com captura)
+
+                Se yParcial == 7 || yParcial == 0
+                    Adiciona tem que haver promocao
+
+        Para o time preto:
+            inversor = -1
+            Chama função do time branco (inversor)
+          
+
+    Torre:
+        //chamada
+        Função ChamaTorre(xi, yi):
+            Com iterador(dir) de 0 a 2: //Loop da direcao //0 é vertical, 1 é horizontal
+                Com iterador(sen) de 0 a 2 // Loop do sentido //0 é positivo, 1 é negativo
+                    Se direção == 0:
+                        yParcial = null
+                        xParcial = xi
+                    Se não:
+                        yParcial = yi
+                        xParcial = null
+                    inversor = -1^sentido
+                    lim = lims(inversor)
+                    abstrataTorre(xParcial, yParcial, lim)
+
+        Função abstrata Torre(xParcial, Yparcial, lim) //As duas não podem ser nulas, é preciso passar uma ou outra
+            Se yParcial == null: flagY = true, coord = yi; 
+            Se xParcial == null: flagX = true, coord = xi;
+
+            Com iterador de 1 até (lim - coord*inversor)
+                coordParcial = xi + iterador*inversor
+                Se flagY == true : yParcial = coordParcial
+                Se flagX == true : xParcial = coordParcial
+                
+                Se não há peça minha nem do meu adversário na posição (xParcial, Yparcial)
+                    pode xParcial, yParcial
+                Se há peça minha na posição (xParcial, yParcial)
+                    break
+                Se há peça do meu adversário (xParcial, Yparcial)
+                    pode ser xParcial, yParcial (com captura)
+                    break
+
+Cavalo:
+
+    //O cavalo possui 8 movimentos possível
+    //Iremos começar no sentido horário
+    
+    Funcao checaColisaoCavalo (xParcial, yParcial, lims[], inversorX, inversorY)
+        Se xParcial*inversorX <= limX e yParcial*inversorY <= limY
+            Se não há peça do meu time na posição (xParcial, yParcial)
+                Se há peçã do meu adversário na posiçao (xParcial, YParcial)
+                    pode ser xParcial, yParcial (com captura)
+                Se não 
+                    pode ser xParcial, yParcial
+    
+    //O inversor serve para mudar o sinal da comparação
+    //Para P1, P2, P3, P4 => inversorX = 1 ; Para P5, P6, P7, P8 => inversorX = -1
+    //Para P1, P2, P7, P8 => inversorY = 1, Para P3, P4, P5, P6 => inversorY = -1
+    
+    funcao cavalo(ang)
+        y = 5*cos(ang)
+        x = 5*sen(ang)
+        return x,y
+	
+    ang = 90 = pi/2
+    div = 12
+        Com i = 0 até (div - 1) 
+            Se(i%3 != 0)
+                ang = ang - i*pi/div		
+            x,y = cavalo(ang)
+            lims[] = defLims(@params...)
+            checaColisaoCavalo(@params...)
+   
+Segue o baile:
+
+Bispo: //Terminar bispo
+
+//Vou fazer por diagonal
+//Nordeste primeiro //acho que eu deveria começar a programar logo.. vou pro peão
+
+Com iterador de 1 a lim
+
+xParcial = xi + 1
+yParcial = yi + 1
+
+
+
+
+
+
+
+
+
+
+    

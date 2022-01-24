@@ -1,0 +1,31 @@
+^(?<letraPeca>[KQRBN])?((?<colunaAmb>[a-h])?(?<LinhaAmb>[1-8])?)?(?<Captura>x)?(?<Destino>[a-h][1-8])(?<pecaProm>[QRBN])?$
+
+(?<pecaProm>[QRBN])?)
+
+-Casos de erro
+--Promovendo uma peça sem que o destino seja na linha 8 ou 1
+--Movimentando para o mesmo lugar
+
+--Decidir se irei fazer tudo em regex ou deixarei algumas coisas para a linha de código.
+
+Fazer caso oferta de empate
+, rocar, check e checkmate.
+
+$1 => Letra da peça, se vazia peão
+$2 => Coluna da peça em caso de movimento ambíguo
+$3 => Linha da peça em caso de movimento ambíguo
+$4 => Captura
+$5 => Destino
+$6 => Letra da peça de promoção
+
+O primeiro teste vai ser regex.
+O segundo teste vai ser de possibilidade do movimento.
+
+
+Decisão
+Apenas o moviemento básico sem restriçõe será pego pelo regex.
+
+De resto posso usar if e elses para completar, inclusive, usando mais regex.
+
+
+

@@ -1,0 +1,90 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+
+:root {
+  --celula_x: calc(100vw/8);
+  --celula_y: calc(100vh/8);
+  --tamanho_peca_x: calc(100vw/8); 
+  --tamanho_peca_y: calc(100vh/8);
+  --cor_peca: pink;
+  --posicao_x: 7;
+  --posicao_y: 1;
+  
+  /** cálculos de posicionamente**/
+  --px: calc((var(--posicao_x) * var(--celula_x)) - var(--celula_x));
+  --py: calc((var(--posicao_y) * var(--celula_y)) - var(--celula_y));
+}
+
+body {
+  display: contents;
+}
+
+#chessBoard {
+  height: 100vh;
+  overflow: auto;
+}
+
+.peca {
+    position: absolute;
+    height: var(--tamanho_peca_y);
+    width: var(--tamanho_peca_x);
+    bottom: var(--py);
+    left: var(--px);
+    color: var(--cor_peca);
+    animation-name: peaoMove;
+    animation-duration: 3s;
+}
+
+.pawn{
+    opacity:1;
+    fill:var(--cor_peca); 
+    fill-opacity:1; 
+    fill-rule:nonzero; 
+    stroke:#000000; 
+    stroke-width:1.5; 
+    stroke-linecap:round; 
+    stroke-linejoin:miter; 
+    stroke-miterlimit:4; 
+    stroke-dasharray:none; 
+    stroke-opacity:1;
+}
+
+
+@keyframes peaoMove {
+  from {bottom: var(--py);}
+  to {bottom: calc(var(--py) + var(--celula_y));}
+}
+
+</style>
+</head>
+<body>
+	
+	<svg id="chessBoard" viewBox="0,0,4,4">
+		<defs>
+		    <rect width="0.5" height="0.5" id="w" fill="#fff" stroke="none"/>
+		    <rect width="0.5" height="0.5" id="b" fill="#49a248" stroke="none"/>   
+		<pattern id="p" width="1" height="1" patternUnits="userSpaceOnUse">
+		    <use xlink:href="#w"/>
+		    <use xlink:href="#w" x="0.5" y="0.5"/>
+		    <use xlink:href="#b" x="0.5"/>
+		    <use xlink:href="#b" y="0.5"/>
+		</pattern>
+		</defs>
+		<rect width="4" height="4" fill="url(#p)"/>
+		
+	</svg>
+	
+	<!-- <div class="peca">♟</div> -->
+	<svg viewBox="3, 0, 45, 45" class="peca">
+		<path class ="pawn" d="m 22.5,9 c -2.21,0 -4,1.79 -4,4 0,0.89 0.29,1.71 0.78,2.38 C 17.33,16.5 16,18.59 16,21 c 0,2.03 0.94,3.84 2.41,5.03 C 15.41,27.09 11,31.58 11,39.5 H 34 C 34,31.58 29.59,27.09 26.59,26.03 28.06,24.84 29,23.03 29,21 29,18.59 27.67,16.5 25.72,15.38 26.21,14.71 26.5,13.89 26.5,13 c 0,-2.21 -1.79,-4 -4,-4 z"/>	
+	</svg>
+
+	
+	
+</body>
+
+</html>
