@@ -27,7 +27,6 @@ while(1):
         print('Seu movimento foi inválido, tente novamente')
         continue
     
-    #jogo.ver()
     time = not time
 
 """ Rotina do jogo

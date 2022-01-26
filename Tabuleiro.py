@@ -41,6 +41,7 @@ class Tabuleiro:
     
     def set_pedra_by_pos(self, pos: tuple, piece: Pedra):
         self.campo[pos[0]][pos[1]] = piece
+        if(piece != None ): piece.pos = pos
         return True
 
     def capturaPedra():
@@ -59,6 +60,11 @@ class Tabuleiro:
         if(tipo == 'bispo'): return isinstance(piece, Bispo)
         if(tipo == 'rei'): return isinstance(piece, Rainha)
         if(tipo == 'rainha'): return isinstance(piece, Rei)
+    
+    def getPieceTime(self, pos:tuple):
+        piece = self.get_pedra_by_pos(pos)
+        if piece == None: return None
+        return piece.time
 
 
     #funções edit (movimento)
