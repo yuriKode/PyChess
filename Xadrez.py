@@ -72,10 +72,6 @@ class Xadrez:
             else:
                 print()
 
-    def fazMovimento(self, partida, chegada):
-        self.tabuleiro.movePedra(partida, chegada)
-        return True
-
     
     def checkLims(self, xParcial, yParcial): #Checa se possível coordenada está no bordo se não retorna impossível
         if xParcial >= 0 and xParcial <= 7: 
@@ -115,66 +111,41 @@ class Xadrez:
             timePeca = self.tabuleiro.getPieceTime((xParcial, yParcial))
             if(timePeca == None): coordPossibles.append((xParcial, yParcial))
 
+        #Depois implemnentar captura en passant
         return coordPossibles
 
-    def descobrePecaMov(self, chegada, captura, time):
+    def descobrePecaMov(self, time, destino, captura, coordAmb):
 
         coordPossiblePieces = []
 
-        if(time == 0): 
-            inversor = 1
-            rankExcept = 1
-        else: 
-            inversor = -1
-            rankExcept = 6
+        if(time == 0): inversor = 1; rankExcept = 1
+        else: inversor = -1; rankExcept = 6
 
         #Apenas movimentos verticais
-        xParcial = chegada[0]
+        xParcial = destino[0]
         for i in [1,2]:
-            yParcial = chegada[1] - i * inversor
-            if(i == 2):
-                if(yParcial != rankExcept): break
+            yParcial = destino[1] - i * inversor
+            if(i == 2 and yParcial != rankExcept): break
             if(self.checkLims(xParcial, yParcial)):
                 piece = self.tabuleiro.get_pedra_by_pos((xParcial, yParcial))
                 typePiece = self.tabuleiro.checkTypePiece(piece, 'peao')
-                if(typePiece == True and piece.time == time): coordPossiblePieces.append((xParcial, yParcial))
+                if(typePiece == True and piece.time == time):
+                    pieceDestinoTime =  self.tabuleiro.getPieceTime(destino)
+                    if(pieceDestinoTime == None): coordPossiblePieces.append((xParcial, yParcial))
 
         #Se houve capturas o peão veio das colunas ao lado
         if (captura == 'x'):
             for i in [1,2]:
-                xParcial = chegada[0] + pow(-1,i)
-                yParcial = chegada[1] - 1 * inversor
-
+                xParcial = destino[0] + pow(-1,i)
+                yParcial = destino[1] - 1 * inversor
                 if(self.checkLims(xParcial, yParcial)):
-                    piece = self.tabuleiro.get_pedra_by_pos(xParcial, yParcial)
+                    piece = self.tabuleiro.get_pedra_by_pos((xParcial, yParcial))
                     typePiece = self.tabuleiro.checkTypePiece(piece, 'peao')
-                    if(typePiece == True and piece.time == time): coordPossiblePieces.append((xParcial, yParcial))
+                    if(typePiece == True and piece.time == time):
+                        pieceDestinoTime =  self.tabuleiro.getPieceTime(destino)
+                        if(pieceDestinoTime == (not time)): coordPossiblePieces.append((xParcial, yParcial))
 
-        #Depois implemnentar en passant ## Ver Captura
-
-        return coordPossiblePieces
-
-    def checaMovimentoPeao(self, time, formatted_matches):
-        #Essa lógica funciona para para o movimento pelo terminal
-        #Vamos restringir o número de peças capaz de realizar tal movimento
-       
-        #yPossibles e xPossibles representam os possíveis pontos de saída da peça
-        peca = formatted_matches['peca']
-        
-        linha = formatted_matches['destinoLinha']
-        coluna = formatted_matches['destinoColuna']
-        chegada = (coluna, linha)
-        captura = formatted_matches['captura']
-        amb = formatted_matches['amb']
-        colunaAmb = formatted_matches['colunaAmb']
-        linhaAmb = formatted_matches['linhaAmb']
-
-        
-        ##Coordenada com possíveis peões que pode realizar o movimento desejado
-        coordPossiblePieces = self.descobrePecaMov(chegada, captura, time)
-
-
-        ##Array com coords das células com peças (das coordPossibles)
+        ##Array com coords das células com peças (das coordPossibles) #ver peças são não vazias e do tipo correto e conta
         coordPieces = []
         count = 0 #conta quantas peças foram encontradas
         for c in coordPossiblePieces:
@@ -185,33 +156,34 @@ class Xadrez:
                     coordPieces.append(c)
 
         coordPiece: tuple #coordenada da peça referida pelo movimento
-        if(count == 0): return [False, 'Esse movimento não pode ser realizado por nenhuma peça do seu time']
-        if(count == 1): coordPiece = coordPieces[0]
+        newCoordPieces = coordPieces.copy()
+        if(count == 0): return {'status': False, 
+                                'msg': 'Esse movimento não pode ser realizado por nenhuma peça do seu time'}
+        if(count == 1): coordPiece = newCoordPieces[0]
         if(count > 1):
-            if(amb != None): 
-                if(colunaAmb != None):[coordPieces.remove(c) for c in coordPieces if colunaAmb != c[0]]
-                if(linhaAmb != None):[coordPieces.remove(c) for c in coordPieces if linhaAmb != c[1]]
+            if(coordAmb != (None, None)): 
+                if(coordAmb[0] != None):[newCoordPieces.remove(c) for c in coordPieces if coordAmb[0] != c[0]]
+                if(coordAmb[1] != None):[newCoordPieces.remove(c) for c in coordPieces if coordAmb[1] != c[1]]
             else:
-                return [False, "O movimento é ambíguo, especifique a peça referida"]
-            coordPiece = coordPieces[0]
+                return {'status': False, 
+                        'msg': "O movimento é ambíguo, especifique a peça referida"}
+            if(len(newCoordPieces) == 1): coordPiece = newCoordPieces[0]
+            else: return {'status': False, 
+                        'msg': "Reveja a sua string de desambiguação."}
+        
 
-        ##Essa parte de cima precisa ser testada
-        coordCalculadas = self.colisaoPeao(time, coordPiece)
+        return {'status': True, 'coordPiece': coordPiece}
+
+    def executeMovement(self, coordPiece, destino, coordPossibles, captura):
         
         #Verifica se movimento feito está no range calculado pela máquina
-        for c in coordCalculadas:
-            if(c == chegada): 
-                self.fazMovimento(coordPiece, chegada)
-                break
+        for c in coordPossibles:
+            if(c == destino): 
+                if(captura == 'x'): self.tabuleiro.capturaPedra(coordPiece, destino)
+                else: self.tabuleiro.movePedra(coordPiece, destino)
+                return {'status': True}
 
-        coordCalculadasToHumans = [self.formatCoordsToHumans(c) for c in coordCalculadas]
-        ## AGORA FAZER INTERSEÇÃO DE MOVIMENTO REQUERIDO PELO JOGADOR
-        ## versus os movimentos possíveis calculador
-
-        msg1 = "Peças que jogador quer que realize o movimento: " + self.formatCoordsToHumans(coordPiece)
-        msg2 = "Possíveis movimento da peça: "
-        for c in coordCalculadasToHumans: msg2 += c + " "
-        return (True, msg1, msg2)
+        return {'status': False, "msg": "Esse movimento não é possível"}
         
 
     def checaMovimentoTorre(time, matches):
@@ -229,13 +201,41 @@ class Xadrez:
     def checaMovimentoRei(time, matches):
         pass
 
+    def  verifyMovement(self, time, letraPeca, destino, captura, coordAmb):
+        
+        if(letraPeca == None): #peão
+            retorno = self.descobrePecaMov(time, destino, captura, coordAmb)
+            if(retorno['status']):
+                coordPiece = retorno['coordPiece']
+                coordPossibles = self.colisaoPeao(time, coordPiece)
+            else: return retorno
+        elif (letraPeca == 'T'): #Torre
+            pass
+        elif(letraPeca == 'N'): #Knight
+            pass
+        elif(letraPeca == 'B'): #Bishop
+            pass
+        elif(letraPeca == 'Q'): #Queen
+            pass
+        elif(letraPeca == 'K'): #King
+            pass
+
+
+        retorno = self.executeMovement(coordPiece, destino, coordPossibles, captura)
+        return retorno
+
+
     def formatCoordsToHumans(self, coord: tuple):
         col = str(chr(int(coord[0]) + ord('a')))
         lin = str(int(coord[1]) + 1)
         return (col + lin)
 
     def formatCoordsToMachine(self, col: chr, lin: chr):
-        pass
+        if(col != None): c = ord(col) - ord('a')
+        else: c = None
+        if(lin != None): l = int(lin) - 1
+        else: l = None
+        return (c, l)
 
     def formatMatches(self, matches):
         formatted_matches = {}
@@ -251,22 +251,15 @@ class Xadrez:
         check = matches['check']
         checkMate = matches['checkmate']
 
-        #formata linhas e colunas
-        coluna_t = ord(matches['destinoColuna']) - ord('a')
-        linha_t = int(matches['destinoLinha']) - 1
-
-        #Se houverem matches nessas posições, formata-as
-        if(matches['colunaAmb'] != None): colunaAmb = ord(matches['colunaAmb']) - ord('a')
-        if(matches['linhaAmb'] != None): linhaAmb = int(matches['linhaAmb']) - 1
+        destino = self.formatCoordsToMachine(destinoColuna, destinoLinha)
+        coordAmb = self.formatCoordsToMachine(colunaAmb, linhaAmb)
 
         ##
         formatted_matches = {'peca': matches['letraPeca'],
-                        'destinoColuna': coluna_t,
-                        'destinoLinha': linha_t,
-                        'captura': matches['captura'],
-                        'amb': matches['amb'],
-                        'colunaAmb': colunaAmb,
-                        'linhaAmb': linhaAmb}
+                            'destino': destino,
+                            'captura': matches['captura'],
+                            'coordAmb': coordAmb
+                            }
 
         return formatted_matches
 
@@ -277,16 +270,15 @@ class Xadrez:
         if(match):
             matches = match.groupdict()
             formatted_matches = self.formatMatches(matches)
-            peca = formatted_matches['peca']
-            
-            if(peca == None): #A peça sendo movimentada é peão
-                retorno = self.checaMovimentoPeao(time, formatted_matches)
-
-    
+            retorno = self.verifyMovement(time, 
+                                          formatted_matches['peca'], 
+                                          formatted_matches['destino'], 
+                                          formatted_matches['captura'], 
+                                          formatted_matches['coordAmb'])
             
             return retorno
         else:
-            return False
+            return {'status': False, 'msg': 'Seu movimento está formado incorretamente.'}
 
 
 

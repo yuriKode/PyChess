@@ -10,20 +10,13 @@ class Tabuleiro:
 
     def add_pedra(self, tipo: str, time: bool, pos: tuple):
 
-        if(tipo == 'peao'):
-            pedra = Peao(time, pos)
-        elif(tipo == 'torre'):
-            pedra = Torre(time, pos)
-        elif(tipo == 'cavalo'):
-            pedra = Cavalo(time, pos)
-        elif(tipo == 'bispo'):
-            pedra = Bispo(time, pos)
-        elif('Rainha'):
-            pedra = Rainha(time, pos)
-        elif('Rei'):
-            pedra = Rei(time, pos)
-        else:
-            return False # pedra inválida
+        if(tipo == 'peao'): pedra = Peao(time, pos)
+        elif(tipo == 'torre'): pedra = Torre(time, pos)
+        elif(tipo == 'cavalo'): pedra = Cavalo(time, pos)
+        elif(tipo == 'bispo'): pedra = Bispo(time, pos)
+        elif('Rainha'): pedra = Rainha(time, pos)
+        elif('Rei'): pedra = Rei(time, pos)
+        else: return False # pedra inválida
 
         self.pedras.append(pedra)
 
@@ -44,13 +37,15 @@ class Tabuleiro:
         if(piece != None ): piece.pos = pos
         return True
 
-    def capturaPedra():
-        pass
+    def capturaPedra(self, partida, destino):
+        self.set_pedra_by_pos(destino, None)
+        self.movePedra(partida, destino)
+        return True
 
-    def movePedra(self, partida: tuple, chegada: tuple): #Essa função não comporta captura
+    def movePedra(self, partida: tuple, destino: tuple): #Essa função não comporta captura
         piece = self.get_pedra_by_pos(partida)
         self.set_pedra_by_pos(partida, None) #seta vazio na posição de partida da pedra
-        self.set_pedra_by_pos(chegada, piece) #seta pedra na posição de chegada
+        self.set_pedra_by_pos(destino, piece) #seta pedra na posição de chegada
         return True
     
     def checkTypePiece(self, piece, tipo):

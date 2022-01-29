@@ -12,19 +12,17 @@ entrada = str()
 msg: str()
 time = 0 # 0 - Representa time branco, 1 - time preto
 while(1):
+
     if(not time): msg = "Time Branco, sua vez: "
     else: msg = "Time Preto, sua vez: "
 
     entrada = input(msg) # Ler input do jogador
     if(entrada == 'quit'): break
-    mov = jogo.checaMovimento(time, entrada)
-    if(mov):
-        print(mov)
-        if(mov[0] == False):
-            continue
-        jogo.ver()
+    
+    retorno = jogo.checaMovimento(time, entrada)
+    if(retorno['status']): jogo.ver()
     else:
-        print('Seu movimento foi inválido, tente novamente')
+        print(retorno['msg'])
         continue
     
     time = not time
