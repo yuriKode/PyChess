@@ -38,6 +38,11 @@ class Board:
         self.setPiecePos(destiny, None)
         self.movePiece(departure, destiny)
         return True
+    
+    def capturePieceEnPassant(self, departure: tuple, destiny: tuple, posPieceCaptured: tuple):
+        self.setPiecePos(posPieceCaptured, None)
+        self.movePiece(departure, destiny)
+        return True
 
     def movePiece(self, departure: tuple, destiny: tuple): #Essa função não comporta captura
         piece = self.getPieceByPos(departure)

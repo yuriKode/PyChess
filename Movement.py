@@ -1,7 +1,14 @@
+from Piece import *
+
 class Movement:
 
     def __init__(self):
         pass
+
+    def constructMove(self, typePiece, departure: tuple, destiny: tuple, team: bool):
+
+        if(typePiece == Pawn):
+            pass
 
 
 """

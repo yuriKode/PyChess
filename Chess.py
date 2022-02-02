@@ -3,6 +3,7 @@ from Player import Player
 from Movement import Movement
 from ReverseMovement import ReverseMovement
 from Piece import *
+from ScoreSheet import ScoreSheet
 import re
 
 class Chess:
@@ -11,6 +12,7 @@ class Chess:
     def __init__(self):
         self.board = Board()
         self.jogadores = list
+        self.scoreSheet = ScoreSheet(self)
 
     def createGame(self): # Normal variations
 
@@ -113,8 +115,10 @@ class Chess:
         if(match):
             matches = match.groupdict()
             formatted_matches = self.formatMatches(matches)
-            reverseMovement =  ReverseMovement(team, formatted_matches, self.board)
+            reverseMovement =  ReverseMovement(team, formatted_matches, self.board, self.scoreSheet)
             answer = reverseMovement.findReverseMovement()
+
+            if(answer['status'] == True): self.scoreSheet.saveMovement(string)
             
             return answer
         else: return {'status': False, 'msg': 'Your movement is formatted incorrectly !'}
