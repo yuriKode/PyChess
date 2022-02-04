@@ -1,0 +1,4 @@
+Round,Team,Piece,From,To,Capture
+1,white,Pawn,e7,e5,False
+,black,Pawn,d4,e5,True
+2,white,Pawn,d7,d5,False

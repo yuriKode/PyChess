@@ -67,6 +67,11 @@ class Chess:
             else:
                 print()
 
+    def formatTeamToHumans(self, team: bool) -> str:
+        if(team): teamString = 'white'
+        else: teamString = 'black'
+        return teamString
+
     def formatCoordsToHumans(self, coord: tuple):
         col = str(chr(int(coord[0]) + ord('a')))
         lin = str(int(coord[1]) + 1)
@@ -115,10 +120,10 @@ class Chess:
         if(match):
             matches = match.groupdict()
             formatted_matches = self.formatMatches(matches)
-            reverseMovement =  ReverseMovement(team, formatted_matches, self.board, self.scoreSheet)
+            reverseMovement =  ReverseMovement(team, formatted_matches, self.board, self.scoreSheet, self)
             answer = reverseMovement.findReverseMovement()
 
-            if(answer['status'] == True): self.scoreSheet.saveMovement(string)
+            if(answer['status'] == True): self.scoreSheet.saveMovement(string, answer['mov'])
             
             return answer
         else: return {'status': False, 'msg': 'Your movement is formatted incorrectly !'}

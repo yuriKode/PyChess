@@ -19,6 +19,9 @@ class Pawn(Piece):
 
     def __init__(self, team, pos, img = ['\u2659', '\u265F'] , lamb_func = None):
         super().__init__(team, pos, img, lamb_func)
+    
+    def __str__(self) -> str:
+        return "Pawn"
 
 class Tower(Piece):
 

@@ -62,12 +62,3 @@ class Board:
         piece = self.getPieceByPos(pos)
         if piece == None: return None
         return piece.team
-
-
-    #funções edit (movimento)
-
-    #funções deleção (captura)
-
-    ##Parei aqui https://docs.python.org/3.8/tutorial/inputoutput.html
-    ## Se quiser uma api de matrix use numpy
-

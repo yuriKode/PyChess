@@ -1,0 +1,9 @@
+1. c4 d5
+2. c5 b5
+3. cxb6 cxb6
+4. e4 d4
+5. d3 f5
+6. exf5 g6
+7. f4 g5
+8. g4 e5
+9. fxe6 gxf4

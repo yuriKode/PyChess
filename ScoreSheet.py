@@ -1,6 +1,7 @@
 import os
 from datetime import datetime
 import re
+import csv
 
 class ScoreSheet:
 
@@ -11,16 +12,20 @@ class ScoreSheet:
         self.chess = chess
 
     def makeFile(self):
+
+        self.directory = 'games/' + str(datetime.now())
         try:
-            os.mkdir('games')
-            print('Directory "games" created!')
+            os.mkdir(self.directory)
+            print('Directory created!')
         except FileExistsError:
             print('Directory already created!')
 
-        self.filename = 'games/' + str(datetime.now()) + '.txt'
+        self.filename = 'Algebraic_Notation.txt'
+        self.filename2 = 'Detailed.csv'
         
         try:
-           with open(self.filename, 'x'): pass
+           with open(self.directory + '/' + self.filename, 'x'): pass
+           with open(self.directory + '/' + self.filename2, 'x', encoding='UTF8', newline=''): pass
         except OSError:
             print('Failed to create the Score Sheet')
         else:
@@ -29,10 +34,10 @@ class ScoreSheet:
         # https://docs.python.org/3.8/library/functions.html#open
         
 
-    def saveMovement(self, string: str):
+    def saveMovement(self, string: str, details: dict):
         self.countMoves += 1
         try:
-            with open(self.filename, 'a') as f:
+            with open(self.directory + '/' + self.filename, 'a') as f:
                 if(self.countMoves%2 != 0):
                     self.countRounds += 1
                     f.write(str(self.countRounds) + '. ' + string + ' ')
@@ -43,6 +48,32 @@ class ScoreSheet:
         else:
             print('Score Sheet updated')
 
+        if(self.countMoves == 1): data = [['Round', 'Team', 'Piece' , 'From', 'To', 'Capture']]
+        else: 
+            if(self.countMoves%2 == 0): round = str(self.countRounds)
+            else: round = ''
+            
+            data = [[round,
+                    self.chess.formatTeamToHumans(details['team']),
+                    str(details['piece']), 
+                    self.chess.formatCoordsToHumans(details['from']), 
+                    self.chess.formatCoordsToHumans(details['to']), 
+                    str(details['capture'])
+            ]]
+        
+        try:
+            with open(self.directory + '/' + self.filename2, 'a', encoding='UTF8', newline='') as f:
+                writer = csv.writer(f)
+                writer.writerows(data)
+        except OSError:
+            print('Failed to update the Detailed Sheet')
+        else:
+            print('Detailed Sheet updated')
+
+
+
+        
+
     def getLastMovement(self, team):
         try:
            with open(self.filename, 'r') as f:
@@ -52,7 +83,7 @@ class ScoreSheet:
             print('Failed to read the last movement')
         else:
             print('Last movement read sucessfully')
-
+        ##This function actually get the last movement only of pawns (with no promotion)
         if(team == False):
             match = re.search(r"(?<= )((?P<xMovement>[a-h])(?P<yMovement>[1-8]))(?= )", lastLine)
         else:
@@ -63,3 +94,19 @@ class ScoreSheet:
             return {'status': True, 'mov': mov}
         else:
             return {'status': False, 'msg': "Last movement not found"}
+
+    def findLastMovement(self, movFrom, movTo, team):
+
+        with open(self.directory + '/' + self.filename2, 'r') as f:
+            reader = csv.DictReader(f)
+            count = 0
+            for row in reader:
+                if(((count == self.countMoves - 2) or (count == self.countMoves - 1)) and (row['Team'] == team)):
+                    if(row['From'] == movFrom and row['To'] == movTo):
+                        return True
+                    else:
+                        return False
+                count += 1
+                
+
+
