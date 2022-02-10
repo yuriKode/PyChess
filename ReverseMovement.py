@@ -27,8 +27,7 @@ class ReverseMovement(Movement):
     def findReverseMovement(self):
 
         if(self.typePiece == Pawn): answer = self.findReversedPawnMovement()
-        elif(self.typePiece == Tower): 
-            pass
+        elif(self.typePiece == Tower): answer = self.findReversedRookMovement()
         elif(self.typePiece == Bishop):
             pass
         elif(self.typePiece == Knight):
@@ -47,12 +46,11 @@ class ReverseMovement(Movement):
     def doMovement(self, mov):
         
         if(mov['capture'] == True):
-            if(mov['enPassant'] == True):
+            if(('enPassant' in mov) and mov['enPassant'] == True):
                 self.board.capturePieceEnPassant(mov['from'], mov['to'], mov['posPieceCaptured'])
             else: self.board.capturePiece(mov['from'], mov['to'])
         else: self.board.movePiece(mov['from'], mov['to'])
 
-    
 
     def findReversedPawnMovement(self):
         
@@ -131,4 +129,55 @@ class ReverseMovement(Movement):
                 if(len(possibleMovementsFiltered) == 1): return {'status': True, 'mov': possibleMovementsFiltered[0]}
                 else: return {'status': False, 'msg': 'Movement not disambiguated'}
             else: return {'status': False, 'msg': 'Ambiguos Movement!'}
-            
+ 
+
+    def findReversedRookMovement(self):
+
+        allPieces = self.board.pieces
+        functionsDestiny = Movement.makeTowerFunctions(self.posDestiny)
+        possiblePieces = []
+        for f in functionsDestiny:
+           for piece in allPieces:
+               if (piece.team == self.team and isinstance(piece, Tower)):
+                    xPiece = piece.pos[0]; yPiece = piece.pos[1]
+                    if (f(xPiece, yPiece) == 0):
+                        possiblePieces.append(piece)
+        
+        legalMovements = []
+        for p in possiblePieces:
+            functions = Movement.makeTowerFunctions(p.pos)
+            legalMovement = Movement.testPoints(functions, p, self.posDestiny, allPieces, self.team, self.capture)
+            if(len(legalMovement) != 0): legalMovements.append(legalMovement)
+        
+        
+        if(len(legalMovements) != 0):
+            legalPieces = [l['piece'] for mov in legalMovements for l in mov]
+            ans = self.disambiguatePieces(legalPieces)
+            pieceMoving = ans['piece']; msg = ans['msg']
+            mov = {'piece': pieceMoving, 
+                    'team': self.team, 
+                    'from': pieceMoving.pos, 
+                    'to': self.posDestiny, 
+                    'capture': self.capture}
+            if(pieceMoving != None): return {'status': True, 'mov': mov}
+            else:return {'status': False, 'msg': msg}
+        else: return {'status': False, 'msg': 'No movement like that is possible!'}      
+    
+    def disambiguatePieces(self, possiblePieces: list) -> dict:
+
+        numberPossiblePieces = len(possiblePieces)
+        if (numberPossiblePieces == 1): pieceMoving = possiblePieces[0]; msg = 'Ok'
+        if (numberPossiblePieces > 1):
+            newPossiblePieces = possiblePieces.copy()
+            if(self.posAmbiguity != (None, None)):
+                for i in [0, 1]:
+                    if(self.posAmbiguity[i] != None):
+                        for p in possiblePieces:
+                            if (self.posAmbiguity[i] != p.pos[i]):
+                                newPossiblePieces.remove(p)
+                newNumberPossiblePieces = len(newPossiblePieces)
+                if(newNumberPossiblePieces == 1): pieceMoving = newPossiblePieces[0]
+                else: pieceMoving = None; msg = 'Movement not disambiguated!'
+            else: pieceMoving = None; msg = 'Ambiguos movement!'
+        
+        return {'piece': pieceMoving, 'msg': msg}

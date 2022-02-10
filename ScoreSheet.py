@@ -70,31 +70,6 @@ class ScoreSheet:
         else:
             print('Detailed Sheet updated')
 
-
-
-        
-
-    def getLastMovement(self, team):
-        try:
-           with open(self.filename, 'r') as f:
-               for line in f: pass
-               lastLine = line
-        except OSError:
-            print('Failed to read the last movement')
-        else:
-            print('Last movement read sucessfully')
-        ##This function actually get the last movement only of pawns (with no promotion)
-        if(team == False):
-            match = re.search(r"(?<= )((?P<xMovement>[a-h])(?P<yMovement>[1-8]))(?= )", lastLine)
-        else:
-            match = re.search(r"(?<= )((?P<xMovement>[a-h])(?P<yMovement>[1-8]))(?=\n)", lastLine)
-        
-        if(match):
-            mov = self.chess.formatCoordsToMachine(match['xMovement'], match['yMovement'])
-            return {'status': True, 'mov': mov}
-        else:
-            return {'status': False, 'msg': "Last movement not found"}
-
     def findLastMovement(self, movFrom, movTo, team):
 
         with open(self.directory + '/' + self.filename2, 'r') as f:

@@ -2,6 +2,7 @@ from Piece import *
 
 class Board:
 
+    
     def __init__(self):
         self.field = [[None for i in range(0,8) ] for j in range(0, 8)]
         self.pieces = []
@@ -35,6 +36,7 @@ class Board:
         return True
 
     def capturePiece(self, departure, destiny):
+        self.pieces.remove(self.getPieceByPos(destiny))
         self.setPiecePos(destiny, None)
         self.movePiece(departure, destiny)
         return True

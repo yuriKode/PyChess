@@ -1,0 +1,16 @@
+Round,Team,Piece,From,To,Capture
+1,white,Pawn,a7,a5,False
+,black,<Piece.Tower object at 0x7f7e09cbc550>,a1,a3,False
+2,white,<Piece.Tower object at 0x7f7e09c41340>,a8,a6,False
+,black,<Piece.Tower object at 0x7f7e09cbc550>,a3,e3,False
+3,white,<Piece.Tower object at 0x7f7e09c41340>,a6,b6,False
+,black,Pawn,b2,b3,False
+4,white,<Piece.Tower object at 0x7f7e09c41340>,b6,b3,True
+,black,<Piece.Tower object at 0x7f7e09cbc550>,e3,b3,True
+5,white,Pawn,b7,b5,False
+,black,Pawn,a4,b5,True
+6,white,Pawn,h7,h5,False
+,black,<Piece.Tower object at 0x7f7e09cbc550>,b3,h3,False
+7,white,<Piece.Tower object at 0x7f7e09c41dc0>,h8,h7,False
+,black,<Piece.Tower object at 0x7f7e09cbc550>,h3,h5,True
+8,white,<Piece.Tower object at 0x7f7e09c41dc0>,h7,h5,True

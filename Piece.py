@@ -8,7 +8,7 @@ class Piece:
 
     def getTypePiece(letterTypePiece):
         if(letterTypePiece == None): return Pawn
-        elif (letterTypePiece == 'T'): return Tower
+        elif (letterTypePiece == 'R'): return Tower
         elif(letterTypePiece == 'N'): return Knight
         elif(letterTypePiece == 'B'): return Bishop
         elif(letterTypePiece == 'Q'): return Queen
@@ -27,6 +27,9 @@ class Tower(Piece):
 
     def __init__(self, team, pos, img = ['\u2656', '\u265C'], lamb_func = None ):
         super().__init__(team, pos, img, lamb_func)
+    
+    def __str__(self) -> str:
+        return "Rook"
 
 class Knight(Piece):
 

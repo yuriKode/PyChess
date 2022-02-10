@@ -1,0 +1,24 @@
+# Algorithm to Find the Rook by Giving a Movement in Algebraic Notation
+
+## The current Idea is:
+
+### What do we have ?
+
+- The destiny
+- The capture information
+- Information of disambiguation
+
+### Algorithm
+
+- Find the rects that intersect the destiny position
+- Find the rooks of this team that intersect with those rects
+- Find all the legal movements involving those rooks (Collision algorithm)
+- If none legal movement was found: return impossible movement
+- If one was found: Do the movement
+- If two or more was found: check if there is some information of disambiguation.
+  - If  there is: See whether all other options was eliminated and only one left
+    - If yes: Do the movement
+    - If no: Then return that the movement was not disambiguated
+
+# Implement This !
+
