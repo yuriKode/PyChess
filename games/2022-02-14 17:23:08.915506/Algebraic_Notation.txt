@@ -1,0 +1,5 @@
+1. a4 a5
+2. Ra3 Ra7
+3. b3 b6
+4. Bb2 Ba6
+5. Bxg7 Bxg7

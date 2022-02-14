@@ -1,0 +1,3 @@
+- Find all the pieces of my team that can possibly do that movement
+- Find which of those pieces can do legal movement
+- Disambiguate the movement if needed

@@ -1,0 +1,10 @@
+Round,Team,Piece,From,To,Capture
+1,white,Pawn,d7,d5,False
+,black,Queen,d1,d2,False
+2,white,Pawn,e7,e5,False
+,black,Queen,d2,b4,False
+3,white,Pawn,e5,e4,False
+,black,Queen,b4,e4,True
+4,white,Pawn,d5,e4,True
+,black,Pawn,d3,e4,True
+5,white,Queen,d8,d4,False

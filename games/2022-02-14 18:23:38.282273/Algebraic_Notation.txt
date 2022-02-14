@@ -1,0 +1,5 @@
+1. d3 d5
+2. Qd2 e5
+3. Qb4 e4
+4. Qxe4 dxe4
+5. dxe4 Qd4

@@ -1,0 +1,12 @@
+Round,Team,Piece,From,To,Capture
+1,white,<Piece.Knight object at 0x7f99a041cbe0>,b8,a6,False
+,black,<Piece.Knight object at 0x7f99a041c400>,c3,a4,False
+2,white,<Piece.Knight object at 0x7f99a041cbe0>,a6,c5,False
+,black,<Piece.Knight object at 0x7f99a041c400>,a4,c5,True
+3,white,Pawn,b7,b6,False
+,black,<Piece.Knight object at 0x7f99a041c610>,g1,f3,False
+4,white,Pawn,b6,c5,True
+,black,<Piece.Knight object at 0x7f99a041c610>,f3,e5,False
+5,white,Pawn,d7,d6,False
+,black,<Piece.Knight object at 0x7f99a041c610>,e5,d3,False
+6,white,<Piece.Bishop object at 0x7f99a041cca0>,c8,a6,False

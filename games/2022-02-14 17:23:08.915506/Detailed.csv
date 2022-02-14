@@ -1,0 +1,10 @@
+Round,Team,Piece,From,To,Capture
+1,white,Pawn,a7,a5,False
+,black,Rook,a1,a3,False
+2,white,Rook,a8,a7,False
+,black,Pawn,b2,b3,False
+3,white,Pawn,b7,b6,False
+,black,<Piece.Bishop object at 0x7f5db8d16550>,c1,b2,False
+4,white,<Piece.Bishop object at 0x7f5db8d16f70>,c8,a6,False
+,black,<Piece.Bishop object at 0x7f5db8d16550>,b2,g7,True
+5,white,<Piece.Bishop object at 0x7f5db8d10190>,f8,g7,True

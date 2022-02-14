@@ -19,7 +19,7 @@ class ReverseMovement(Movement):
         self.scoreSheet = scoreSheet
         self.chess = chess
 
-    def isInTheBoard(self, pos):
+    def isInTheBoard(self, pos: tuple):
         if(self.LIM_MIN <= pos[0] <= self.LIM_MAX 
         and self.LIM_MIN <= pos[1] <= self.LIM_MAX): return True
         else: return False
@@ -27,13 +27,10 @@ class ReverseMovement(Movement):
     def findReverseMovement(self):
 
         if(self.typePiece == Pawn): answer = self.findReversedPawnMovement()
-        elif(self.typePiece == Tower): answer = self.findReversedRookMovement()
-        elif(self.typePiece == Bishop):
-            pass
-        elif(self.typePiece == Knight):
-            pass
-        elif(self.typePiece == Queen):
-            pass
+        elif(self.typePiece == Tower): answer = self.findReversedMovement()
+        elif(self.typePiece == Bishop): answer = self.findReversedMovement()
+        elif(self.typePiece == Knight): answer = self.findReversedMovement()
+        elif(self.typePiece == Queen): answer = self.findReversedMovement()
         elif(self.typePiece == King):
             pass
         else: answer = {'status': False, 'msg': 'Invalid Piece !'}
@@ -129,39 +126,77 @@ class ReverseMovement(Movement):
                 if(len(possibleMovementsFiltered) == 1): return {'status': True, 'mov': possibleMovementsFiltered[0]}
                 else: return {'status': False, 'msg': 'Movement not disambiguated'}
             else: return {'status': False, 'msg': 'Ambiguos Movement!'}
- 
+    
+    def findReversedMovement(self):
 
-    def findReversedRookMovement(self):
+        possiblePieces = self.findAllPiecesForThatMovement()
+        legalMovements = self.findLegalMovements(possiblePieces)
+        disambiguateMovement = self.disambiguateMovement(legalMovements)
 
+        if(len(legalMovements) != 0):
+            if(disambiguateMovement['piece'] != None):
+                pieceMoving = disambiguateMovement['piece']
+                mov = {'piece': pieceMoving, 
+                        'team': self.team, 
+                        'from': pieceMoving.pos, 
+                        'to': self.posDestiny, 
+                        'capture': self.capture}
+                return {'status': True, 'mov': mov}
+            else:
+                return {'status': False, 'msg': disambiguateMovement['msg']}
+        else:
+            return {'status': False, 'msg': 'No movement like that is possible!'}
+
+    def findAllPiecesForThatMovement(self):
+        
         allPieces = self.board.pieces
-        functionsDestiny = Movement.makeTowerFunctions(self.posDestiny)
+
+        if(self.typePiece == Tower): functionsDestiny = Movement.makeTowerFunctions(self.posDestiny)
+        elif(self.typePiece == Bishop): functionsDestiny = Movement.makeBishopFunctions(self.posDestiny)
+        elif(self.typePiece == Knight): functionsDestiny = Movement.makeKnightFunctions(self.posDestiny)
+        elif(self.typePiece == Queen): functionsDestiny = Movement.makeQueenFunctions(self.posDestiny)
+
         possiblePieces = []
         for f in functionsDestiny:
            for piece in allPieces:
-               if (piece.team == self.team and isinstance(piece, Tower)):
+               if (piece.team == self.team and isinstance(piece, self.typePiece)):
                     xPiece = piece.pos[0]; yPiece = piece.pos[1]
                     if (f(xPiece, yPiece) == 0):
                         possiblePieces.append(piece)
-        
+
+        return possiblePieces
+    
+    def findLegalMovements(self, possiblePieces: list):
+
         legalMovements = []
+        allPieces = self.board.pieces
         for p in possiblePieces:
-            functions = Movement.makeTowerFunctions(p.pos)
-            legalMovement = Movement.testPoints(functions, p, self.posDestiny, allPieces, self.team, self.capture)
+
+            if(self.typePiece == Tower): 
+                functions = Movement.makeTowerFunctions(p.pos)
+                legalMovement = Movement.testPoints(functions, p, self.posDestiny, allPieces, self.team, self.capture)
+            elif (self.typePiece == Bishop): 
+                functions = Movement.makeBishopFunctions(p.pos)
+                legalMovement = Movement.testPoints(functions, p, self.posDestiny, allPieces, self.team, self.capture)
+            elif (self.typePiece == Knight): 
+                functions = Movement.makeKnightFunctions(p.pos)
+                legalMovement = Movement.testPointKnight(functions, p, self.posDestiny, allPieces, self.team, self.capture)
+            elif (self.typePiece == Queen): 
+                functions = Movement.makeQueenFunctions(p.pos)
+                legalMovement = Movement.testPoints(functions, p, self.posDestiny, allPieces, self.team, self.capture)
+            
             if(len(legalMovement) != 0): legalMovements.append(legalMovement)
-        
-        
+
+        return legalMovements
+
+    def disambiguateMovement(self, legalMovements):
+
         if(len(legalMovements) != 0):
             legalPieces = [l['piece'] for mov in legalMovements for l in mov]
             ans = self.disambiguatePieces(legalPieces)
-            pieceMoving = ans['piece']; msg = ans['msg']
-            mov = {'piece': pieceMoving, 
-                    'team': self.team, 
-                    'from': pieceMoving.pos, 
-                    'to': self.posDestiny, 
-                    'capture': self.capture}
-            if(pieceMoving != None): return {'status': True, 'mov': mov}
-            else:return {'status': False, 'msg': msg}
-        else: return {'status': False, 'msg': 'No movement like that is possible!'}      
+            return ans
+        else:
+            return None
     
     def disambiguatePieces(self, possiblePieces: list) -> dict:
 
@@ -181,3 +216,5 @@ class ReverseMovement(Movement):
             else: pieceMoving = None; msg = 'Ambiguos movement!'
         
         return {'piece': pieceMoving, 'msg': msg}
+
+    

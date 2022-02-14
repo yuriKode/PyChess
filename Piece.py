@@ -35,18 +35,30 @@ class Knight(Piece):
 
     def __init__(self, team, pos, img = ['\u2658', '\u265E'], lamb_func = None ):
         super().__init__(team, pos, img, lamb_func)
+    
+    def __str__(self) -> str:
+        return "Knight"
 
 class Bishop(Piece):
     
     def __init__(self, team, pos, img = ['\u2657', '\u265D'], lamb_func = None ):
         super().__init__(team, pos, img, lamb_func)
 
+    def __str__(self) -> str:
+        return "Bishop"
+
 class Queen(Piece):
 
     def __init__(self, team, pos, img = ['\u2655', '\u265B'], lamb_func = None ):
         super().__init__(team, pos, img, lamb_func)
 
+    def __str__(self) -> str:
+        return "Queen"
+
 class King(Piece):
 
     def __init__(self, team, pos, img = ['\u2654', '\u265A'], lamb_func = None ):
         super().__init__(team, pos, img, lamb_func)
+    
+    def __str__(self) -> str:
+        return "Queen"
