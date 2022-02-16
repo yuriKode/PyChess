@@ -35,16 +35,50 @@ class Movement:
     def isInTheBoard(x, y):
         if(LIM_MIN <= x <= LIM_MAX and LIM_MIN <= y <= LIM_MAX): return True
         else: return False
+    
+    def isDirectionPositive(direction, team):
+        
+        if((direction > 0 and team == False) or (direction < 0 and team == True)): return True
+        else: return False
 
-    def makePawnFunction(xP, yP):
+    def pawnSubEquation(x, y, x1, y1, x2, y2, type, team, capture):
+
+        distance = math.floor(math.dist((x1, y1), (x, y)))
+        direction = y - y1
+
+        if(distance == 1): 
+            if((type == 'fromDestiny' and Movement.isDirectionPositive(direction, team) == False)
+            or (type == 'fromPiece' and Movement.isDirectionPositive(direction, team) == True)):
+                g = Movement.LinearEquation(x1, y1, x2, y2)
+                return g(x, y)
+        
+        if(distance == 2):
+            if(type == 'fromDestiny' and Movement.isDirectionPositive(direction, team) == False):
+                if(capture == False and ((y == 1 and team == False) or (y == 6 and team == True))):
+                    g = Movement.LinearEquation(x1, y1, x2, y2)
+                    return g(x, y)
+            if(type == 'fromPiece' and Movement.isDirectionPositive(direction, team) == True):
+                if(capture == False and ((y1 == 1 and team == False) or (y1 == 6 and team == True))):
+                    g = Movement.LinearEquation(x1, y1, x2, y2)
+                    return g(x, y)
+
+        return 1
+    
+    def pawnEquation(x1, y1, x2, y2, type, team, capture):
+        return lambda x, y: Movement.pawnSubEquation(x, y, x1, y1, x2, y2, type, team, capture)
+
+    def makePawnFunctions(pos, capture, type, team):
         
         functions = []
-        x2 = xP; y2 = yP + 1  # vertical movement
-        functions.append(Movement.LinearEquation(xP, yP, x2, y2))
-        x2 = xP + 1 # positive diagonal
-        functions.append(Movement.LinearEquation(xP, yP, x2, y2))
-        x2 = xP - 1 # negative diagonal
-        functions.append(Movement.LinearEquation(xP, yP, x2, y2))
+        x1 = pos[0]; y1 = pos[1]
+        if(capture == False):
+            x2 = x1; y2 = y1 + 1  # vertical movement
+            functions.append(Movement.pawnEquation(x1, y1, x2, y2, type, team, capture))
+        else:
+            x2 = x1 + 1; y2 = y1 + 1 # positive diagonal
+            functions.append(Movement.pawnEquation(x1, y1, x2, y2, type, team, capture))
+            x2 = x1 - 1; y2 = y1 + 1 # negative diagonal
+            functions.append(Movement.pawnEquation(x1, y1, x2, y2, type, team, capture))
 
         return functions
     

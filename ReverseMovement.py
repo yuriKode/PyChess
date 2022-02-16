@@ -26,7 +26,7 @@ class ReverseMovement(Movement):
 
     def findReverseMovement(self):
 
-        if(self.typePiece == Pawn): answer = self.findReversedPawnMovement()
+        if(self.typePiece == Pawn): answer = self.findReversedMovement()
         elif(self.typePiece == Tower): answer = self.findReversedMovement()
         elif(self.typePiece == Bishop): answer = self.findReversedMovement()
         elif(self.typePiece == Knight): answer = self.findReversedMovement()
@@ -151,7 +151,8 @@ class ReverseMovement(Movement):
         
         allPieces = self.board.pieces
 
-        if(self.typePiece == Tower): functionsDestiny = Movement.makeTowerFunctions(self.posDestiny)
+        if(self.typePiece == Pawn): functionsDestiny = Movement.makePawnFunctions(self.posDestiny, self.capture, 'fromDestiny', self.team)
+        elif(self.typePiece == Tower): functionsDestiny = Movement.makeTowerFunctions(self.posDestiny)
         elif(self.typePiece == Bishop): functionsDestiny = Movement.makeBishopFunctions(self.posDestiny)
         elif(self.typePiece == Knight): functionsDestiny = Movement.makeKnightFunctions(self.posDestiny)
         elif(self.typePiece == Queen): functionsDestiny = Movement.makeQueenFunctions(self.posDestiny)
@@ -172,7 +173,10 @@ class ReverseMovement(Movement):
         allPieces = self.board.pieces
         for p in possiblePieces:
 
-            if(self.typePiece == Tower): 
+            if(self.typePiece == Pawn):
+                functions = Movement.makePawnFunctions(p.pos, self.capture, 'fromPiece', self.team)
+                legalMovement = Movement.testPoints(functions, p, self.posDestiny, allPieces, self.team, self.capture)
+            elif(self.typePiece == Tower): 
                 functions = Movement.makeTowerFunctions(p.pos)
                 legalMovement = Movement.testPoints(functions, p, self.posDestiny, allPieces, self.team, self.capture)
             elif (self.typePiece == Bishop): 

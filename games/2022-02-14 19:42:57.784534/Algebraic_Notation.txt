@@ -1,0 +1,7 @@
+1. c4 d5
+2. cxd5 Qxd5
+3. d4 Qxd4
+4. Qxd4 e6
+5. Nc3 Bb4
+6. Bd2 Bxc3
+7. Bxc3 

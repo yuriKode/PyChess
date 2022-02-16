@@ -21,3 +21,6 @@ while(1):
     else: print(answer['msg']) ; continue
     
     team = not team
+
+
+##Stopped in this bug "bc3" -> moved the pawn from c2 to c3, I think that that shouldn't happen
